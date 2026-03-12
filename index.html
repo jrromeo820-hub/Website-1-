@@ -1,1 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAISON NOIR — Haute Couture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Tenor+Sans&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --deep: #0e0e0e;
+    --charcoal: #1a1a1a;
+    --grey: #2e2e2e;
+    --mid: #6b6b6b;
+    --silver: #9e9e9e;
+    --bone: #e8e0d4;
+    --white: #f5f0ea;
+    --gold: #c9a96e;
+    --gold-light: #e4c98a;
+    --cream: #f2ede6;
+  }
 
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--bone);
+    font-family: 'Tenor Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ─── CUSTOM CURSOR ─── */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(201,169,110,0.5);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.12s ease-out, width 0.3s, height 0.3s;
+  }
+  body:hover .cursor { opacity: 1; }
+  .cursor.expand { width: 16px; height: 16px; background: var(--gold-light); }
+  .cursor-ring.expand { width: 56px; height: 56px; border-color: rgba(201,169,110,0.3); }
+
+  /* ─── PRELOADER ─── */
+  #preloader {
+    position: fixed; inset: 0;
+    background: var(--black);
+    z-index: 10000;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 2rem;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  #preloader.hidden { opacity: 0; visibility: hidden; }
+  .preloader-logo {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    letter-spacing: 0.5em;
+    color: var(--bone);
+    animation: fadeFlicker 1.5s ease infinite alternate;
+  }
+  .preloader-bar {
+    width: 200px; height: 1px;
+    background: var(--grey);
+    position: relative; overflow: hidden;
+  }
+  .preloader-progress {
+    height: 100%; width: 0%;
+    background: var(--gold);
+    transition: width 2.2s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  @keyframes fadeFlicker {
+    0% { opacity: 0.4; } 100% { opacity: 1; }
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    padding: 2rem 4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    z-index: 1000;
+    mix-blend-mode: difference;
+    transition: padding 0.4s;
+  }
+  nav.scrolled { padding: 1.2rem 4rem; }
+  .nav-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.4em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex; gap: 3rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Tenor Sans', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -3px; left: 0;
+    width: 0; height: 1px;
+    background: var(--gold);
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* ─── HERO ─── */
+  .hero {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 6rem 4rem 6rem 5rem;
+    position: relative; z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 0.8s forwards 2.8s;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(4rem, 7vw, 7.5rem);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    opacity: 0;
+    transform: translateY(40px);
+    animation: slideUp 1s forwards 3s;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--bone);
+  }
+
+  .hero-sub {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--silver);
+    margin-top: 2.5rem;
+    max-width: 280px;
+    line-height: 2;
+    opacity: 0;
+    animation: fadeIn 1s forwards 3.4s;
+  }
+
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 1rem;
+    margin-top: 3rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    opacity: 0;
+    animation: fadeIn 1s forwards 3.7s;
+    transition: gap 0.3s;
+  }
+  .hero-cta:hover { gap: 1.8rem; }
+  .hero-cta::after {
+    content: '';
+    display: block;
+    width: 40px; height: 1px;
+    background: var(--gold);
+    transition: width 0.4s;
+  }
+  .hero-cta:hover::after { width: 70px; }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-image {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(30%) contrast(1.1);
+    transform: scale(1.08);
+    transition: transform 8s ease;
+    animation: zoomOut 8s forwards 2s;
+  }
+
+  @keyframes zoomOut {
+    from { transform: scale(1.12); }
+    to { transform: scale(1.0); }
+  }
+
+  .hero-image-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to right, var(--black) 0%, transparent 40%);
+    z-index: 1;
+  }
+
+  .hero-counter {
+    position: absolute;
+    bottom: 6rem; right: 4rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--mid);
+    z-index: 2;
+    opacity: 0;
+    animation: fadeIn 1s forwards 3.8s;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem; left: 5rem;
+    display: flex; align-items: center; gap: 1rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--mid);
+    z-index: 3;
+    opacity: 0;
+    animation: fadeIn 1s forwards 4s;
+  }
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: var(--gold);
+    animation: scrollPulse 2s ease-in-out infinite 4s;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.3); }
+  }
+
+  @keyframes slideUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* ─── MARQUEE ─── */
+  .marquee-section {
+    border-top: 1px solid var(--charcoal);
+    border-bottom: 1px solid var(--charcoal);
+    padding: 1.2rem 0;
+    overflow: hidden;
+    background: var(--deep);
+  }
+  .marquee-track {
+    display: flex; gap: 4rem;
+    animation: marquee 25s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    display: flex; align-items: center; gap: 4rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--mid);
+    flex-shrink: 0;
+  }
+  .marquee-dot {
+    width: 4px; height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ─── SECTION HEADER ─── */
+  .section-header {
+    display: flex; align-items: center; gap: 2rem;
+    margin-bottom: 4rem;
+  }
+  .section-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .section-line {
+    flex: 1; height: 1px;
+    background: linear-gradient(to right, var(--charcoal), transparent);
+  }
+  .section-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    color: var(--grey);
+    letter-spacing: 0.1em;
+  }
+
+  /* ─── COLLECTION ─── */
+  .collection {
+    padding: 8rem 5rem;
+    background: var(--black);
+  }
+
+  .collection-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 5vw, 5rem);
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 1rem;
+    color: var(--white);
+  }
+  .collection-title em { font-style: italic; color: var(--gold); }
+
+  .collection-subtitle {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--silver);
+    text-transform: uppercase;
+    margin-bottom: 5rem;
+    max-width: 500px;
+    line-height: 2.2;
+  }
+
+  .collection-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 1.5px;
+    background: var(--charcoal);
+  }
+
+  .collection-item {
+    background: var(--black);
+    overflow: hidden;
+    position: relative;
+    cursor: none;
+  }
+  .collection-item:first-child {
+    grid-row: span 2;
+  }
+
+  .collection-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(20%) contrast(1.05);
+    transition: transform 0.9s cubic-bezier(0.4,0,0.2,1), filter 0.6s;
+    display: block;
+    min-height: 280px;
+  }
+  .collection-item:first-child img { min-height: 580px; }
+
+  .collection-item:hover img {
+    transform: scale(1.06);
+    filter: grayscale(0%) contrast(1.1);
+  }
+
+  .item-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 50%);
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .collection-item:hover .item-overlay { opacity: 1; }
+
+  .item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+  }
+  .item-price {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .item-tag {
+    position: absolute; top: 1.5rem; left: 1.5rem;
+    font-size: 0.52rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    background: var(--black);
+    color: var(--gold);
+    padding: 0.4rem 0.8rem;
+  }
+
+  /* ─── EDITORIAL ─── */
+  .editorial {
+    padding: 8rem 5rem;
+    background: var(--deep);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8rem;
+    align-items: center;
+  }
+
+  .editorial-visual {
+    position: relative;
+  }
+
+  .editorial-visual img {
+    width: 100%;
+    height: 600px;
+    object-fit: cover;
+    filter: sepia(10%) contrast(1.08);
+    display: block;
+  }
+
+  .editorial-accent {
+    position: absolute;
+    top: -2rem; right: -2rem;
+    width: 200px; height: 200px;
+    border: 1px solid var(--gold);
+    opacity: 0.2;
+    z-index: -1;
+  }
+
+  .editorial-content {}
+
+  .editorial-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3vw, 3.2rem);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.35;
+    color: var(--white);
+    margin-bottom: 2.5rem;
+    position: relative;
+  }
+  .editorial-quote::before {
+    content: '"';
+    font-size: 8rem;
+    color: var(--charcoal);
+    position: absolute;
+    top: -2.5rem; left: -2rem;
+    font-family: 'Cormorant Garamond', serif;
+    line-height: 1;
+    z-index: -1;
+  }
+
+  .editorial-body {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    line-height: 2.4;
+    color: var(--silver);
+    margin-bottom: 3rem;
+  }
+
+  .editorial-author {
+    display: flex; align-items: center; gap: 1.5rem;
+  }
+  .author-line { width: 30px; height: 1px; background: var(--gold); }
+  .author-name {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ─── LOOKBOOK ─── */
+  .lookbook {
+    padding: 8rem 5rem;
+    background: var(--black);
+  }
+
+  .lookbook-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: end;
+    margin-bottom: 5rem;
+  }
+
+  .lookbook-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 5vw, 5rem);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--white);
+  }
+
+  .lookbook-desc {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    line-height: 2.2;
+    color: var(--mid);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--charcoal);
+  }
+
+  .lookbook-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5px;
+    background: var(--charcoal);
+  }
+
+  .look-item {
+    position: relative;
+    overflow: hidden;
+    background: var(--black);
+    cursor: none;
+  }
+
+  .look-item img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    filter: grayscale(30%);
+    transition: transform 0.8s cubic-bezier(0.4,0,0.2,1), filter 0.5s;
+    display: block;
+  }
+  .look-item:hover img {
+    transform: scale(1.05);
+    filter: grayscale(0%);
+  }
+
+  .look-num {
+    position: absolute;
+    top: 1.5rem; left: 1.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.2em;
+  }
+
+  .look-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, var(--black) 0%, transparent 100%);
+    padding: 3rem 1.5rem 1.5rem;
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+  .look-item:hover .look-info { transform: translateY(0); }
+
+  .look-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--white);
+  }
+  .look-season {
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 0.3rem;
+  }
+
+  /* ─── ATELIER ─── */
+  .atelier {
+    padding: 8rem 5rem;
+    background: var(--charcoal);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 6rem;
+  }
+
+  .atelier-aside {
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .atelier-large-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10rem;
+    font-weight: 300;
+    color: var(--grey);
+    line-height: 1;
+    opacity: 0.5;
+  }
+
+  .atelier-tagline {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    line-height: 2;
+  }
+
+  .atelier-stats {
+    display: flex; flex-direction: column; gap: 2.5rem;
+  }
+
+  .stat-item {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--grey);
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+  }
+  .stat-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .atelier-main {}
+
+  .atelier-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 2rem;
+  }
+  .atelier-title em { font-style: italic; color: var(--gold); }
+
+  .atelier-text {
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    line-height: 2.5;
+    color: var(--silver);
+    margin-bottom: 3rem;
+  }
+
+  .atelier-image-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5px;
+    background: var(--grey);
+  }
+
+  .atelier-image-row img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(20%);
+    transition: filter 0.5s;
+  }
+  .atelier-image-row img:hover { filter: grayscale(0%); }
+
+  /* ─── SERVICES ─── */
+  .services {
+    padding: 8rem 5rem;
+    background: var(--black);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--charcoal);
+  }
+
+  .service-item {
+    padding: 3.5rem 3rem;
+    border-right: 1px solid var(--charcoal);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+  }
+  .service-item:last-child { border-right: none; }
+  .service-item::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--gold);
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+  .service-item:hover::before { width: 100%; }
+  .service-item:hover { background: var(--deep); }
+
+  .service-icon {
+    width: 32px; height: 32px;
+    margin-bottom: 2rem;
+    opacity: 0.6;
+  }
+
+  .service-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--charcoal);
+    margin-bottom: 1rem;
+    display: block;
+    transition: color 0.4s;
+  }
+  .service-item:hover .service-num { color: var(--grey); }
+
+  .service-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
+
+  .service-text {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    line-height: 2.2;
+    color: var(--mid);
+  }
+
+  /* ─── NEWSLETTER ─── */
+  .newsletter {
+    padding: 8rem 5rem;
+    background: var(--deep);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .newsletter::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(201,169,110,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .newsletter-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 5rem);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  .newsletter-title em { font-style: italic; color: var(--gold); }
+
+  .newsletter-sub {
+    font-size: 0.62rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 3.5rem;
+  }
+
+  .newsletter-form {
+    display: flex;
+    max-width: 480px; margin: 0 auto;
+    border-bottom: 1px solid var(--charcoal);
+    gap: 0;
+  }
+  .newsletter-form:focus-within {
+    border-bottom-color: var(--gold);
+  }
+  .newsletter-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 1rem 0;
+    font-family: 'Tenor Sans', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--bone);
+    text-transform: uppercase;
+  }
+  .newsletter-input::placeholder {
+    color: var(--grey);
+    letter-spacing: 0.25em;
+  }
+  .newsletter-btn {
+    background: transparent;
+    border: none;
+    cursor: none;
+    padding: 0 0 0 1.5rem;
+    font-family: 'Tenor Sans', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    transition: letter-spacing 0.3s;
+  }
+  .newsletter-btn:hover { letter-spacing: 0.5em; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--black);
+    border-top: 1px solid var(--charcoal);
+    padding: 5rem 5rem 3rem;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+    padding-bottom: 4rem;
+    border-bottom: 1px solid var(--charcoal);
+  }
+
+  .footer-brand {}
+  .footer-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.4em;
+    color: var(--bone);
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+  .footer-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--mid);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .footer-col-title {
+    font-size: 0.58rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 0.8rem;
+  }
+  .footer-links a {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: var(--mid);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--bone); }
+
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-copy {
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: var(--grey);
+    text-transform: uppercase;
+  }
+
+  .social-row {
+    display: flex; gap: 2rem;
+  }
+  .social-link {
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--grey);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .social-link:hover { color: var(--gold); }
+
+  /* ─── REVEAL ANIMATIONS ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1);
+  }
+  .reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1);
+  }
+  .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+  /* ─── HORIZONTAL RULE DIVIDER ─── */
+  .gold-divider {
+    display: flex; align-items: center; gap: 2rem;
+    padding: 0 5rem;
+  }
+  .gold-divider::before, .gold-divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(to right, transparent, var(--charcoal), transparent);
+  }
+  .gold-divider-gem {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* ─── PAGE TRANSITION ─── */
+  .page-transition {
+    position: fixed; inset: 0;
+    background: var(--black);
+    z-index: 9000;
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 1024px) {
+    nav { padding: 1.5rem 2.5rem; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { position: absolute; inset: 0; opacity: 0.3; }
+    .hero-left { position: relative; z-index: 2; height: 100vh; justify-content: center; }
+    .collection-grid { grid-template-columns: 1fr 1fr; }
+    .collection-item:first-child { grid-row: auto; grid-column: span 2; }
+    .editorial { grid-template-columns: 1fr; gap: 3rem; }
+    .lookbook-strip { grid-template-columns: 1fr 1fr; }
+    .atelier { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .service-item { border-right: none; border-bottom: 1px solid var(--charcoal); }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 680px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    .collection, .lookbook, .editorial, .atelier, .services, .newsletter { padding: 5rem 1.5rem; }
+    .collection-grid { grid-template-columns: 1fr; }
+    .collection-item:first-child { grid-column: auto; }
+    .lookbook-strip { grid-template-columns: 1fr; }
+    .lookbook-header { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr; }
+    footer { padding: 3rem 1.5rem 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="preloader-logo">MAISON NOIR</div>
+  <div class="preloader-bar"><div class="preloader-progress" id="progress"></div></div>
+</div>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">MAISON NOIR</a>
+  <ul class="nav-links">
+    <li><a href="#collection">Collection</a></li>
+    <li><a href="#editorial">Maison</a></li>
+    <li><a href="#lookbook">Lookbook</a></li>
+    <li><a href="#atelier">Atelier</a></li>
+    <li><a href="#newsletter">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Collection — Automne / Hiver 2025</div>
+    <h1 class="hero-title">
+      The Art<br>
+      of <em>Silent</em><br>
+      Luxury
+    </h1>
+    <p class="hero-sub">Crafted for those who need no introduction. Each piece a statement in restraint.</p>
+    <a href="#collection" class="hero-cta">Discover the Collection</a>
+  </div>
+  <div class="hero-right">
+    <img class="hero-image" src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=1200&q=85&auto=format" alt="Luxury fashion">
+    <div class="hero-image-overlay"></div>
+  </div>
+  <div class="hero-counter">01 / 06</div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item"><span>Haute Couture</span><div class="marquee-dot"></div><span>Paris 2025</span><div class="marquee-dot"></div><span>Maison Noir</span><div class="marquee-dot"></div><span>Handcrafted Excellence</span><div class="marquee-dot"></div><span>Limited Edition</span><div class="marquee-dot"></div><span>Bespoke Tailoring</span><div class="marquee-dot"></div></div>
+    <div class="marquee-item"><span>Haute Couture</span><div class="marquee-dot"></div><span>Paris 2025</span><div class="marquee-dot"></div><span>Maison Noir</span><div class="marquee-dot"></div><span>Handcrafted Excellence</span><div class="marquee-dot"></div><span>Limited Edition</span><div class="marquee-dot"></div><span>Bespoke Tailoring</span><div class="marquee-dot"></div></div>
+  </div>
+</div>
+
+<!-- COLLECTION -->
+<section class="collection" id="collection">
+  <div class="section-header reveal">
+    <span class="section-label">Notre Collection</span>
+    <div class="section-line"></div>
+    <span class="section-num">01</span>
+  </div>
+  <h2 class="collection-title reveal"><em>Automne</em> / Hiver</h2>
+  <p class="collection-subtitle reveal">Each silhouette speaks in whispers. Structured darkness, meticulous craft, uncompromising elegance.</p>
+
+  <div class="collection-grid reveal">
+    <div class="collection-item">
+      <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&q=80&auto=format" alt="Feature look">
+      <div class="item-tag">New Arrival</div>
+      <div class="item-overlay">
+        <div class="item-name">Le Manteau Obscur</div>
+        <div class="item-price">€ 4,850</div>
+      </div>
+    </div>
+    <div class="collection-item">
+      <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=700&q=80&auto=format" alt="Look 2">
+      <div class="item-overlay">
+        <div class="item-name">La Robe Silence</div>
+        <div class="item-price">€ 3,200</div>
+      </div>
+    </div>
+    <div class="collection-item">
+      <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=700&q=80&auto=format" alt="Look 3">
+      <div class="item-tag">Exclusive</div>
+      <div class="item-overlay">
+        <div class="item-name">L'Imperméable Nuit</div>
+        <div class="item-price">€ 5,600</div>
+      </div>
+    </div>
+    <div class="collection-item">
+      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=700&q=80&auto=format" alt="Look 4">
+      <div class="item-overlay">
+        <div class="item-name">La Veste Ombre</div>
+        <div class="item-price">€ 2,950</div>
+      </div>
+    </div>
+    <div class="collection-item">
+      <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=700&q=80&auto=format" alt="Look 5">
+      <div class="item-overlay">
+        <div class="item-name">Le Trench Minuit</div>
+        <div class="item-price">€ 4,100</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"><div class="gold-divider-gem"></div></div>
+
+<!-- EDITORIAL -->
+<section class="editorial" id="editorial">
+  <div class="editorial-visual reveal-left">
+    <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=900&q=80&auto=format" alt="Editorial">
+    <div class="editorial-accent"></div>
+  </div>
+  <div class="editorial-content reveal-right">
+    <div class="section-header">
+      <span class="section-label">Notre Philosophie</span>
+      <div class="section-line"></div>
+      <span class="section-num">02</span>
+    </div>
+    <blockquote class="editorial-quote">
+      "True luxury is the absence of vulgarity — it is what remains when everything unnecessary is removed."
+    </blockquote>
+    <p class="editorial-body">
+      At Maison Noir, we believe that clothing is not merely worn — it is inhabited. Each garment is an architecture of intention, built to outlast seasons and silence trends. We source the rarest materials, employ the oldest techniques, and surrender to no deadline but perfection.
+      <br><br>
+      Our atelier in the 8th arrondissement has stood for three generations, a quiet monument to the belief that beauty is not a trend but a conviction.
+    </p>
+    <div class="editorial-author">
+      <div class="author-line"></div>
+      <span class="author-name">Isabelle Voss — Directrice Artistique</span>
+    </div>
+  </div>
+</section>
+
+<!-- LOOKBOOK -->
+<section class="lookbook" id="lookbook">
+  <div class="lookbook-header reveal">
+    <h2 class="lookbook-title">2025<br><em>Lookbook</em></h2>
+    <p class="lookbook-desc">Each look is a study in the poetic tension between shadow and form, between restraint and desire. Four visions. One obsession.</p>
+  </div>
+  <div class="lookbook-strip">
+    <div class="look-item reveal">
+      <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&q=80&auto=format" alt="Look 1">
+      <div class="look-num">I</div>
+      <div class="look-info">
+        <div class="look-title">L'Ombre Dorée</div>
+        <div class="look-season">Automne 2025</div>
+      </div>
+    </div>
+    <div class="look-item reveal">
+      <img src="https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=600&q=80&auto=format" alt="Look 2">
+      <div class="look-num">II</div>
+      <div class="look-info">
+        <div class="look-title">La Femme Obscure</div>
+        <div class="look-season">Automne 2025</div>
+      </div>
+    </div>
+    <div class="look-item reveal">
+      <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80&auto=format" alt="Look 3">
+      <div class="look-num">III</div>
+      <div class="look-info">
+        <div class="look-title">Le Minuit Blanc</div>
+        <div class="look-season">Hiver 2025</div>
+      </div>
+    </div>
+    <div class="look-item reveal">
+      <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&q=80&auto=format" alt="Look 4">
+      <div class="look-num">IV</div>
+      <div class="look-info">
+        <div class="look-title">La Nuit Éternelle</div>
+        <div class="look-season">Hiver 2025</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ATELIER -->
+<section class="atelier" id="atelier">
+  <div class="atelier-aside reveal-left">
+    <div class="atelier-large-num">03</div>
+    <div>
+      <div class="atelier-stats">
+        <div class="stat-item">
+          <div class="stat-num">1947</div>
+          <div class="stat-label">Year Founded</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">38</div>
+          <div class="stat-label">Master Artisans</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">400+</div>
+          <div class="stat-label">Hours per Garment</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="atelier-main reveal-right">
+    <div class="section-header">
+      <span class="section-label">Notre Atelier</span>
+      <div class="section-line"></div>
+    </div>
+    <h2 class="atelier-title">Where <em>Craft</em><br>Becomes<br>Devotion</h2>
+    <p class="atelier-text">
+      Behind every seam lies a story. In our Paris atelier, 38 master artisans carry forward techniques passed through generations — hand-stitching, bespoke draping, couture embroidery. No machine replicates what decades of devotion produces in human hands. We do not manufacture clothing. We compose it.
+    </p>
+    <div class="atelier-image-row">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&auto=format" alt="Atelier 1">
+      <img src="https://images.unsplash.com/photo-1614252234498-0b9ed9e46e15?w=600&q=80&auto=format" alt="Atelier 2">
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services">
+  <div class="section-header reveal" style="padding: 0; margin-bottom: 4rem;">
+    <span class="section-label">Nos Services</span>
+    <div class="section-line"></div>
+    <span class="section-num">04</span>
+  </div>
+  <div class="services-grid">
+    <div class="service-item reveal">
+      <span class="service-num">I</span>
+      <h3 class="service-name">Bespoke Tailoring</h3>
+      <p class="service-text">A garment made entirely for you. Three appointments, fourteen measurements, one extraordinary result.</p>
+    </div>
+    <div class="service-item reveal">
+      <span class="service-num">II</span>
+      <h3 class="service-name">Private Styling</h3>
+      <p class="service-text">Our directrice artistique curates a personal wardrobe proposal, available by appointment only.</p>
+    </div>
+    <div class="service-item reveal">
+      <span class="service-num">III</span>
+      <h3 class="service-name">Heritage Restoration</h3>
+      <p class="service-text">Aging couture pieces restored to their original glory by the hands that understand them best.</p>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" id="newsletter">
+  <div class="reveal">
+    <h2 class="newsletter-title">Enter the<br><em>Inner Circle</em></h2>
+    <p class="newsletter-sub">Private access. Exclusive previews. The silence before the collection.</p>
+    <div class="newsletter-form">
+      <input class="newsletter-input" type="email" placeholder="Your email address">
+      <button class="newsletter-btn">Subscribe</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <span class="footer-logo">MAISON NOIR</span>
+      <p class="footer-tagline">"The house that built its reputation on what it chose not to say."</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Maison</div>
+      <ul class="footer-links">
+        <li><a href="#">Our Heritage</a></li>
+        <li><a href="#">The Atelier</a></li>
+        <li><a href="#">Commitments</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Collections</div>
+      <ul class="footer-links">
+        <li><a href="#">Automne / Hiver</a></li>
+        <li><a href="#">Printemps / Été</a></li>
+        <li><a href="#">Capsule</a></li>
+        <li><a href="#">Archive</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <ul class="footer-links">
+        <li><a href="#">24 Rue Faubourg Saint-Honoré</a></li>
+        <li><a href="#">Paris, France 75008</a></li>
+        <li><a href="#">contact@maisonnoir.com</a></li>
+        <li><a href="#">+33 1 42 68 XX XX</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 Maison Noir. All rights reserved.</span>
+    <div class="social-row">
+      <a href="#" class="social-link">Instagram</a>
+      <a href="#" class="social-link">Pinterest</a>
+      <a href="#" class="social-link">Weibo</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ─── CURSOR ───
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => {
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    }, 60);
+  });
+
+  document.querySelectorAll('a, button, .collection-item, .look-item, .service-item').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.classList.add('expand');
+      ring.classList.add('expand');
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.classList.remove('expand');
+      ring.classList.remove('expand');
+    });
+  });
+
+  // ─── PRELOADER ───
+  const prog = document.getElementById('progress');
+  const preloader = document.getElementById('preloader');
+
+  setTimeout(() => { prog.style.width = '100%'; }, 100);
+  setTimeout(() => {
+    preloader.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+  }, 2600);
+
+  document.body.style.overflow = 'hidden';
+
+  // ─── NAV SCROLL ───
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  });
+
+  // ─── SCROLL REVEAL ───
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // stagger children
+        e.target.querySelectorAll('.collection-item, .look-item, .service-item, .stat-item').forEach((child, i) => {
+          child.style.transitionDelay = (i * 0.1) + 's';
+          child.classList.add('visible');
+        });
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+  // ─── PARALLAX HERO ───
+  window.addEventListener('scroll', () => {
+    const heroImg = document.querySelector('.hero-image');
+    if (heroImg) {
+      heroImg.style.transform = `scale(1.0) translateY(${window.scrollY * 0.15}px)`;
+    }
+  });
+
+  // ─── NEWSLETTER ───
+  const btn = document.querySelector('.newsletter-btn');
+  const input = document.querySelector('.newsletter-input');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      if (input.value.includes('@')) {
+        btn.textContent = 'Welcome';
+        btn.style.color = 'var(--gold-light)';
+        input.value = '';
+        input.placeholder = 'You are now part of the circle';
+      }
+    });
+  }
+
+  // ─── COUNTER ANIMATION ───
+  function animateValue(el, from, to, duration) {
+    let start = null;
+    const step = ts => {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      el.textContent = Math.floor(progress * (to - from) + from) + (el.dataset.suffix || '');
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  const statNums = document.querySelectorAll('.stat-num');
+  const statObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const text = e.target.textContent;
+        const num = parseInt(text.replace(/\D/g, ''));
+        const suffix = text.replace(/[0-9]/g, '');
+        e.target.dataset.suffix = suffix;
+        animateValue(e.target, 0, num, 1800);
+        statObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  statNums.forEach(n => statObserver.observe(n));
+</script>
+</body>
+</html>
